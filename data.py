@@ -1,9 +1,24 @@
 import os
-
 import pandas as pd
 
 
-def read_data(age, path, run_selected):
+def read_data(age: int, path: str, run_selected: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    '''read_data This Function 
+
+    Parameters
+    ----------
+    age :
+        patient age
+    path : 
+        files path
+    run_selected : 
+        the run selected for individual report
+        
+    Returns
+    -------
+    tuple(pd.Dataframe*6)
+        Returns all dataframes from the txt files.
+    '''
     columns = [
         'Frame', 'Time', 'Recto Femoral Derecho', 'Semitendinoso Derecho', 'Tibial anterior Derecho', 'Gastronemio Derecho', 
         'Recto Femoral Izquierdo', 'Semitendinoso Izquierdo', 'Tibial anterior Izquierdo', 'Gastronemio Izquierdo'

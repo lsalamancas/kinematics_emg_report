@@ -3,6 +3,8 @@ import os
 import time
 import openpyxl
 import pandas as pd
+import csv
+import logging
 
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -11,6 +13,11 @@ from kinematics import rms
 from kinemg_PDF import PDF_MM
 from similarity import cmc
 
+FORMAT = '%(asctime)s %(filename)3s %(user)-3s %(levelname)-8s: %(message)s'
+logging.basicConfig(format=FORMAT)
+d = {'user': os.getlogin()}
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def find_folder():
     global path
@@ -55,7 +62,7 @@ def add_new_sheet(excel_book, df, sheetname, addnew = True):
     return excel_book
 
 
-async def save_excel(six, selected_run):
+async def save_excel(six, selected_run): 
     p_path = os.sep.join([path, folder])
     runs_mdx = os.listdir(p_path)[2:5]
     runs = [run.split()[-1][1:2] for run in runs_mdx]
@@ -65,17 +72,24 @@ async def save_excel(six, selected_run):
     kin_data2 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     data_similarity = cmc(kin_data, kin_data2, kin_data3, runs)
-    
-    # print(data_similarity.index, kin_data.columns)
-    kin_data.columns = ['Tobillo Derecho Flexo-Extensión', 'Tobillo Derecho Interno-Externo', 'Rodilla Derecha Flexo-Extensión', 'Rodilla Derecha Add-Abd', 'Rodilla Derecha Interna-Externa',
-                        'Cadera Derecha Flexo-Extensión', 'Cadera Derecha Add-Abd', 'Cadera Derecha Interna-Externa', 'Tobillo Izquierdo Flexo-Extensión', 'Tobillo Izquierdo Interno-Externo', 
-                        'Rodilla Izquierda Flexo-Extensión', 'Rodilla Izquierda Add-Abd', 'Rodilla Izquierda Interna-Externa','Cadera Izquierda Flexo-Extensión', 'Cadera Izquierda Add-Abd',
-                        'Cadera Izquierdo Interna-Externa', 'Pelvis Derecha Inclinación', 'Pelvis Derecha Oblicuidad', 'Pelvis Derecha Rotación',  'Pelvis Izquierda Inclinación', 'Pelvis Izquierda Oblicuidad', 
-                        'Pelvis Izquierda Rotación'
-                        ]
+
+    with open('excel_headers.csv', encoding='latin-1') as headers_csv:
+
+        '''
+        If the tdf file has been processed with AEFP processor, the mdx file will have 44 angle data, and if it has been processed with GDI+GPS+DML,
+        the mdx file will have 22 angle data in different order. So in the excel_headers csv file are the full names for these two cases in spanish.
+        '''
+        
+        excel_headers = list(csv.reader(headers_csv, delimiter=';'))
+        if kin_data.shape[1] <= 22:
+            excel_header = excel_headers[1][:22]
+        else: 
+            excel_header = excel_headers[0]
+
+    kin_data.columns = excel_header
 
     if six == 'SI':
-        print('Creating excel')
+        logger.info('Creating excel', extra=d)
         six_data_path = r'C:\\Users\\marcha\\Desktop\\PACIENTES\\PACIENTES VAR_6_MINS'
         p_folder_name = ' '.join(folder.split()[:-1]) + ' 6_MIN'
         p_six_path = os.sep.join([six_data_path, p_folder_name, f'Data6_min_{file_name}.xlsx'])
@@ -95,16 +109,18 @@ async def save_excel(six, selected_run):
         excel_book = add_new_sheet(excel_book, data_similarity, 'Similitud') 
 
         excel_book.save(f'{p_path}{os.sep}Grafica&Data_6min_{file_name}.xlsx')
+        logger.info('Excel created', extra=d)
 
     elif six == 'NO':
-        print('Creating excel')
+        logger.info('Creating excel', extra=d)
         wb = Workbook()
         wb = add_new_sheet(wb, kin_data, 'Datos Cinemática', addnew=False)
         wb = add_new_sheet(wb, data_similarity, 'Similitud')
         wb.save(f'{p_path}{os.sep}Graficas_{file_name}.xlsx')
-
-    print('Excel created')
-
+        logger.info('Excel created', extra=d)
+    else:
+        logger.warning('Caution: Check in "NOTA.txt" 6min option, the excel file has not been created.', extra=d)
+    
 
 def p_data():
     global file_name, folder
@@ -157,10 +173,10 @@ def main():
     try:
         pdf.output(os.sep.join([path, folder, f'{file_name}_ReporteMM.pdf']))
     except PermissionError:
-        print('You have an open pdf with the same name')
+        logger.warning('You have an open pdf with the same name')
 
-    print(f'Documento creado en: {os.sep.join([path, folder])}')
-    print(f'Tiempo transcurrido: {time.time() - t0}')
+    logger.info(f'Documento creado en: {os.sep.join([path, folder])}', extra=d)
+    logger.info(f'Tiempo transcurrido: {time.time() - t0}', extra=d)
 
 
 if __name__ == "__main__":
