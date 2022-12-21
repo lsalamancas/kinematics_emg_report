@@ -3,7 +3,7 @@ import os
 import time
 import openpyxl
 import pandas as pd
-import csv
+import yaml
 import logging
 
 from openpyxl import Workbook
@@ -12,6 +12,7 @@ from openpyxl.styles import Alignment
 from kinematics import rms
 from kinemg_PDF import PDF_MM
 from similarity import cmc
+from yaml import SafeLoader
 
 FORMAT = '%(asctime)s %(filename)3s %(user)-3s %(levelname)-3s: %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -72,25 +73,16 @@ async def save_excel(six, selected_run):
     kin_data2 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     data_similarity = cmc(kin_data, kin_data2, kin_data3, runs)
-
-    with open('excel_headers.csv', encoding='latin-1') as headers_csv:
-
-        '''
-        If the tdf file has been processed with AEFP processor, the mdx file will have 44 angle data, and if it has been processed with GDI+GPS+DML,
-        the mdx file will have 22 angle data in different order. So in the excel_headers csv file are the full names for these two cases in spanish.
-        '''
-        
-        excel_headers = list(csv.reader(headers_csv, delimiter=';'))
-        if kin_data.shape[1] <= 22:
-            excel_header = excel_headers[1][:22]
-        else: 
-            excel_header = excel_headers[0]
-
-    kin_data.columns = excel_header
+    
+    with open('config.yaml', encoding='utf8') as yaml_file:
+        config = yaml.load(yaml_file, Loader=SafeLoader)
+        kinematics_headers = config['Headers']['Kinematics']
+        six_data_path = config['sixmin_folder_path']
+    kin_data.columns = [kinematics_headers[joint] for joint in kin_data.columns]
 
     if six == 'SI':
         logger.info('Creating excel', extra=d)
-        six_data_path = r'C:\\Users\\marcha\\Desktop\\PACIENTES\\PACIENTES VAR_6_MINS'
+        # six_data_path = r'C:\\Users\\marcha\\Desktop\\PACIENTES\\PACIENTES VAR_6_MINS'
         p_folder_name = ' '.join(folder.split()[:-1]) + ' 6_MIN'
         p_six_path = os.sep.join([six_data_path, p_folder_name, f'Data6_min_{file_name}.xlsx'])
 
