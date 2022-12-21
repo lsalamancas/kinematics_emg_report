@@ -13,7 +13,7 @@ from kinematics import rms
 from kinemg_PDF import PDF_MM
 from similarity import cmc
 
-FORMAT = '%(asctime)s %(filename)3s %(user)-3s %(levelname)-8s: %(message)s'
+FORMAT = '%(asctime)s %(filename)3s %(user)-3s %(levelname)-3s: %(message)s'
 logging.basicConfig(format=FORMAT)
 d = {'user': os.getlogin()}
 logger = logging.getLogger(__name__)
