@@ -50,16 +50,12 @@ def add_new_sheet(excel_book, df, sheetname, addnew = True):
         for c_idx, value in enumerate(row, 1):
             ws.cell(row=r_idx, column=c_idx, value=value)
 
-    if sheetname == 'Similitud':
-        ws.column_dimensions['A'].width = 35
-    else: 
-        for col in ws.columns:
-            column = col[0].column_letter
-            if column != 'A':
-                ws.column_dimensions[column].width = 20
-        for row in ws.iter_rows():
-            for cell in row:
-                cell.alignment =  Alignment(horizontal='center', wrap_text=True)
+    for col in ws.columns:
+        column = col[0].column_letter
+        ws.column_dimensions[column].width = 20 if sheetname != 'Similitud' else 35
+    for row in ws.iter_rows():
+        for cell in row:
+            cell.alignment =  Alignment(horizontal='center', wrap_text=True)
     return excel_book
 
 
@@ -69,15 +65,41 @@ async def save_excel(six, selected_run):
     runs = [run.split()[-1][1:2] for run in runs_mdx]
     runs = [selected_run] + [run for run in runs if run != selected_run]          #runs with the selected run first
 
+    with open('config.yaml', encoding='utf8') as yaml_file:
+        config = yaml.load(yaml_file, Loader=SafeLoader)
+
+        # Headers for excel file 
+        
+        kinematics_headers = config['Headers']['Kinematics']
+        forces_headers = config['Headers']['Kinetics']['Force']
+        torques_headers = config['Headers']['Kinetics']['Torque']
+        power_headers = config['Headers']['Kinetics']['Power']
+
+        # Filenames of data to read 
+        filenames = config['Filenames']
+        # Path where the six min data was saved
+    
+        six_data_path = config['sixmin_folder_path']
+    
+    # Reading files    
+    #kinematics
+    
     kin_data = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[0]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     kin_data2 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+
+    #kinetics
+    try:
+        forces = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Force"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+        torques = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Torque"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+        powers = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Power"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+        thereare_kinetics = True
+    except FileNotFoundError as e:
+        logger.warning(f'{e}, if there are no kinetics skip this message')
+        # logger.warning(f'Kinetics files not found {e}, if there are no kinetics skip this message')
+        thereare_kinetics = False
+
     data_similarity = cmc(kin_data, kin_data2, kin_data3, runs)
-    
-    with open('config.yaml', encoding='utf8') as yaml_file:
-        config = yaml.load(yaml_file, Loader=SafeLoader)
-        kinematics_headers = config['Headers']['Kinematics']
-        six_data_path = config['sixmin_folder_path']
     kin_data.columns = [kinematics_headers[joint] for joint in kin_data.columns]
 
     if six == 'SI':
@@ -99,7 +121,13 @@ async def save_excel(six, selected_run):
 
         excel_book = add_new_sheet(excel_book, kin_data, 'Datos Cinemática') 
         excel_book = add_new_sheet(excel_book, data_similarity, 'Similitud') 
-
+        if thereare_kinetics:
+            forces.columns = [forces_headers[joint] for joint in forces.columns]
+            torques.columns = [torques_headers[joint] for joint in torques.columns]
+            powers.columns = [power_headers[joint] for joint in powers.columns]
+            excel_book = add_new_sheet(excel_book, forces, 'Fuerzas')
+            excel_book = add_new_sheet(excel_book, torques, 'Torques')
+            excel_book = add_new_sheet(excel_book, powers, 'Potencias')
         excel_book.save(f'{p_path}{os.sep}Grafica&Data_6min_{file_name}.xlsx')
         logger.info('Excel created', extra=d)
 
