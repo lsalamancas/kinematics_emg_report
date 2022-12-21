@@ -1,0 +1,53 @@
+# This file contains some configs for the program 
+# Path where six_min files are stored
+sixmin_folder_path: "C:\\Users\\marcha\\Desktop\\PACIENTES\\PACIENTES VAR_6_MINS"
+# Headers of the kinematics and kinetics datasets and their translation into Spanish. 
+Headers: 
+  Kinematics:
+    #Sagittal
+    acRSPFE: Tronco Derecho Flexo-Extensión
+    acLSPFE: Tronco Izquierdo Flexo-Extensión
+    acRSHTILT: Hombros Derecho Inclincación
+    acLSHTILT: Hombros Izquierdo Inclincación
+    acRSHTILTOFF: Hombros Derecho Inclincación Relativa
+    acLSHTILTOFF: Hombros Izquierdo Inclincación Relativa
+    acRPTILT: Pelvis Derecha Inclinación
+    acLPTILT: Pelvis Izquierda Inclinación
+    acRHPFE: Cadera Derecha Flexo-Extensión
+    acLHPFE: Cadera Izquierda Flexo-Extensión
+    acRKFE: Rodilla Derecha Flexo-Extensión
+    acLKFE: Rodilla Izquierda Flexo-Extensión
+    acRAFE: Tobillo Derecho Flexo-Extensión
+    acLAFE: Tobillo Izquierdo Flexo-Extensión
+    #Coronal
+    acRSPML: Tronco Derecho Medio-Lateral
+    acLSPML: Tronco Izquierdo Medio-Lateral
+    acLSHOBLI: Hombros Derecho Oblicuidad
+    acRSHOBLI: Hombros Izquierdo Oblicuidad
+    acRSHOBLIOFF: Hombros Derecho Oblicuidad Relativa
+    acLSHOBLIOFF: Hombros Izquierdo Oblicuidad Relativa
+    acRPOBLI: Pelvis Derecha Oblicuidad
+    acLPOBLI: Pelvis Izquierda Oblicuidad
+    acRHPAA: Cadera Derecha Add-Abd
+    acLHPAA: Cadera Izquierda Add-Abd
+    acRKAA: Rodilla Derecha Add-Abd
+    acLKAA: Rodilla Izquierda Add-Abd
+    acRFAA: Pie Derecho Add-Abd
+    acLFAA: Pie Izquierdo Add-Abd
+    #Transverse
+    acRPROT: Pelvis Derecha Rotación
+    acLPROT: Pelvis Izquierda Rotación
+    acRHPIE: Cadera Derecha Interna-Externa
+    acLHPIE: Cadera Izquierda Interna-Externa
+    acRKIE: Rodilla Derecha Interna-Externa
+    acLKIE: Rodilla Izquierda Interna-Externa
+    acRAIE: Tobillo Derecho Interno-Externo
+    acLAIE: Tobillo Izquierdo Interno-Externo
+    acRSPIE: Tronco Derecho Interno-Externo
+    acLSPIE: Tronco Izquierdo Interno-Externo
+    acRSHROT: Hombros Derecho Rotación
+    acLSHROT: Hombros Izquierdo Rotación
+    acRSHROTOFF: Hombros Derecho Rotación Relativa
+    acLSHROTOFF: Hombros Izquierdo Rotación Relativa
+    acRFIE: Pie Derecho Interno-Externo
+    acLFIE: Pie Izquierdo Interno-Externo
