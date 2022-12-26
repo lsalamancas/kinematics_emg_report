@@ -139,3 +139,13 @@ Headers:
       pcLKIE: Potencia de Rotación Rodilla Izquierda
       pcRFIE: Potencia de Rotación Pie Derecho
       pcLFIE: Potencia de Rotación Pie Izquierdo
+    emg: 
+      Right Rectus femoris: 'Recto Femoral Derecho'
+      Right Semitendinosus: 'Semitendinoso Derecho'
+      Right Tibialis anterior: 'Tibial anterior Derecho'
+      Right Gastrocnemius medialis: 'Gastronemio Derecho'
+      Left Rectus femoris: 'Recto Femoral Izquierdo'
+      Left Semitendinosus: 'Semitendinoso Izquierdo'
+      Left Tibialis anterior: 'Tibial anterior Izquierdo'
+      Left Gastrocnemius medialis: 'Gastronemio Izquierdo'
+    events: ['eRHS', 'eRTO', 'eLHS', 'eLRTO']
