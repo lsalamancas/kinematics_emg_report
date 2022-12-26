@@ -7,7 +7,7 @@ Filenames:
     Kinetics:
       Force: forces.emt
       Torque: torques.emt 
-      Power: powers.emt
+      Power: power.emt
 
 # Headers of the kinematics and kinetics datasets and their translation into Spanish. 
 Headers: 
