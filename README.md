@@ -19,4 +19,3 @@ This repository contains the code for the automatic generation of kinematic and 
 4. Run main.py (I recommend executing from windows cmd)
 
 **If you want to change the filenames to read, go to _config.yaml_ and do it**
-
