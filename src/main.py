@@ -84,9 +84,9 @@ async def save_excel(six, selected_run):
     # Reading files    
     #kinematics
     
-    kin_data = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[0]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
-    kin_data2 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
-    kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data = pd.read_fwf(f'{p_path}{os.sep}angles{runs[0]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data2 = pd.read_fwf(f'{p_path}{os.sep}angles{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data3 = pd.read_fwf(f'{p_path}{os.sep}angles{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
 
     #kinetics
 

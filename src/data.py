@@ -27,7 +27,7 @@ def read_data(age: int, p_path: str, run_selected: int) -> tuple[pd.DataFrame, p
     times = pd.read_fwf(f'{p_path}{os.sep}times.emt', skiprows=6)
     scalars = pd.read_fwf(f'{p_path}{os.sep}scalars.emt', skiprows=6)
     events = pd.read_fwf(f'{p_path}{os.sep}events.emt', skiprows=6).set_index('Item')
-    kin_data = pd.read_fwf(f'{p_path}{os.sep}graficas{run_selected}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data = pd.read_fwf(f'{p_path}{os.sep}angles{run_selected}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
     if age < 18:
         dh = pd.read_excel(os.sep.join([os.path.dirname(p_path),'normatives','dh_normal.xlsx']), sheet_name = 'DH_Children',  header = 7, index_col = 0).dropna()
         return times, scalars, events, kin_data, emg_data, dh

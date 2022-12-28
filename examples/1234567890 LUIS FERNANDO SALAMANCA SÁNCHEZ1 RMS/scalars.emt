@@ -1,0 +1,10 @@
+BTS ASCII format
+
+Type:         	Scalar values
+Measure unit: 	
+
+Values:       	10
+
+  sRSTANCE	   sRSWING	sRDBLSTANCE	  sLSTANCE	   sLSWING	sLDBLSTANCE	    RGDI %	    LGDI %	     sRGPS	     sLGPS	
+     0.620	     0.380	      0.115	     0.617	     0.383	      0.116	     0.931	     0.962	     6.830	     6.871	
+
