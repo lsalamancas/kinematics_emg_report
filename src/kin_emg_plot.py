@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import os
 
-
+path = os.path.dirname(os.getcwd())
 def planes():
     return {
         'sagittal': [['RPTILT', 'LPTILT'], ['RHPFE', 'LHPFE'], ['RKFE', 'LKFE'], ['RAFE', 'LAFE']],
@@ -91,7 +92,7 @@ def plt_kin(kin_data, dh_data, plane, toe_off):
         axs[i].set_ylim(ybottom, ytop)        
            
     plt.tight_layout()
-    plt.savefig(f'images/{plane}.png', dpi=200)
+    plt.savefig(os.sep.join([path, 'images', f'{plane}.png']), dpi=200)
     # plt.show()
 
 def plt_emg(emg_data, t_stance, e_hs):
@@ -122,7 +123,7 @@ def plt_emg(emg_data, t_stance, e_hs):
         ax.set_ylim(-0.5, 0.5)
         ax.margins(x=0)
 
-    plt.savefig('images/emg.png', dpi=200)
+    plt.savefig(os.sep.join([path, 'images', 'emg.png']), dpi=200)
 
 
 def find_ranges(max_min):
@@ -274,5 +275,5 @@ def plt_tables(kin_data, plane, toe_off):
                         line_color = 'black'))
         ])
         fig_rng.update_layout(width = 330, height = h[1], margin = {'l': 0, 'r': 0.5, 't': 0, 'b': 0})
-        fig_mm.write_image(f'images/mm_{plane}{int(i / 2)}.png', scale = 3)
-        fig_rng.write_image(f'images/rng_{plane}{int(i / 2)}.png', scale = 3)
+        fig_mm.write_image(os.sep.join([path, 'images', f'{plane}{int(i / 2)}.png']), scale = 3)
+        fig_rng.write_image(os.sep.join([path, 'images', f'{plane}{int(i / 2)}.png']), scale = 3)

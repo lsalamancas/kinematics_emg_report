@@ -19,11 +19,9 @@ logging.basicConfig(format=FORMAT)
 d = {'user': os.getlogin()}
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+path = os.path.dirname(os.getcwd())    
 
-def find_folder():
-    global path
-
-    path = os.getcwd()      #os.path.dirname(__file__) --> another option
+def find_folder():  
     for file in os.listdir(path):
         for strings in file.split(): 
             if strings.isdigit():
@@ -65,7 +63,7 @@ async def save_excel(six, selected_run):
     runs = [run.split()[-1][1:2] for run in runs_mdx]
     runs = [selected_run] + [run for run in runs if run != selected_run]          #runs with the selected run first
 
-    with open('config.yaml', encoding='utf8') as yaml_file:
+    with open(os.sep.join([path,'config.yaml']), encoding='utf8') as yaml_file:
         config = yaml.load(yaml_file, Loader=SafeLoader)
 
         # Headers for excel file 
@@ -86,9 +84,9 @@ async def save_excel(six, selected_run):
     # Reading files    
     #kinematics
     
-    kin_data = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[0]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
-    kin_data2 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
-    kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data = pd.read_fwf(f'{p_path}{os.sep}angles{runs[0]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data2 = pd.read_fwf(f'{p_path}{os.sep}angles{runs[1]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
+    kin_data3 = pd.read_fwf(f'{p_path}{os.sep}angles{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
 
     #kinetics
 
@@ -188,7 +186,7 @@ def p_data():
 
 def main():
     t0 = time.time()
-    if not os.path.exists('images'):
+    if not os.path.exists(os.sep.join([path,'images'])):
         os.mkdir('images')
     p_info = p_data()
     print(p_info)
@@ -204,7 +202,7 @@ def main():
     except PermissionError:
         logger.warning('You have an open pdf with the same name')
 
-    logger.info(f'Documento creado en: {os.sep.join([path, folder])}', extra=d)
+    logger.info(f'Document created at: {os.sep.join([path, folder])}', extra=d)
     logger.info(f'Tiempo transcurrido: {time.time() - t0}', extra=d)
 
 

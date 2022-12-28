@@ -1,4 +1,5 @@
 from fpdf import FPDF
+import os
 
 ''' PDF max and min report, and EMG
 This class create a PDF of the...
@@ -9,10 +10,11 @@ class PDF_MM(FPDF):
     def __init__(self, p_info, orientation, unit, format): # firstname, lastname, age, pathology, p_id
         super().__init__(orientation, unit, format)
         self.name, self.age, self.pathgy, self.id, _ = p_info
+        self.path = os.path.dirname(os.getcwd())
 
 
     def header(self):
-        self.image('images/roosevelt.png', 5, 3, 30)
+        self.image(os.sep.join([self.path, 'images', 'roosevelt.png']), 5, 3, 30)
 
         # HEADER ONLY IN PAGE No 1
         if self.page_no() == 3:
@@ -60,32 +62,30 @@ class PDF_MM(FPDF):
 
     def pag1(self):
         self.add_page()
-        self.image('images/sagittal.png' , 5, 45, 70, 150)
-        self.image('images/transverse.png' , 140, 45, 70, 150)
+        self.image(os.sep.join([self.path, 'images', 'sagittal.png']) , 5, 45, 70, 150)
+        self.image(os.sep.join([self.path, 'images', 'transverse.png']) , 140, 45, 70, 150)
         w, h1, h2 = 60, 25, [7, 10, 7, 13]
         x, y, x1 = 75, 47, 210
         y1 = y
         for i, h in zip(range(4), [4, 2, 5, 3]):
-            self.image(f'images/mm_sagittal{i}.png', x, y, w, h1)
-            self.image(f'images/rng_sagittal{i}.png', x, y + h1, w, h2[i])
-            self.image(f'images/mm_transverse{i}.png', x1, y1, w, h1)
-            self.image(f'images/rng_transverse{i}.png', x1, y1 + h1, w, h2[0])
+            self.image(os.sep.join([self.path, 'images', f'mm_sagittal{i}.png']), x, y, w, h1)
+            self.image(os.sep.join([self.path, 'images', f'rng_sagittal{i}.png']), x, y + h1, w, h2[i])
+            self.image(os.sep.join([self.path, 'images', f'mm_transverse{i}.png']), x1, y1, w, h1)
+            self.image(os.sep.join([self.path, 'images', f'rng_transverse{i}.png']), x1, y1 + h1, w, h2[0])
             y += h1 + h2[i] + h 
             y1 += h1 + h2[0] + 5
         
 
-
     def pag2(self):
         self.add_page()
-        self.image('images/frontal.png' , 75, 55, 75, 120)
+        self.image(os.sep.join([self.path, 'images','frontal.png']) , 75, 55, 75, 120)
         x, y, w, h1, h2 = 155, 57, 60, 25, 8
         for i in range(3):
-            self.image(f'images/mm_frontal{i}.png', x, y, w, h1)
-            self.image(f'images/rng_frontal{i}.png', x, y + h1, w, h2)
+            self.image(os.sep.join([self.path, 'images',f'mm_frontal{i}.png']), x, y, w, h1)
+            self.image(os.sep.join([self.path, 'images',f'rng_frontal{i}.png']), x, y + h1, w, h2)
             y += h1 + h2 + 7
-
 
 
     def pag3(self):
         self.add_page(orientation='P')
-        self.image('images/emg.png' , 5, 45, 200, 210)
+        self.image(os.sep.join([self.path, 'images','emg.png']) , 5, 45, 200, 210)
