@@ -76,7 +76,9 @@ async def save_excel(six, selected_run):
         power_headers = config['Headers']['Kinetics']['Power']
 
         # Filenames of data to read 
+
         filenames = config['Filenames']
+
         # Path where the six min data was saved
     
         six_data_path = config['sixmin_folder_path']
@@ -89,20 +91,20 @@ async def save_excel(six, selected_run):
     kin_data3 = pd.read_fwf(f'{p_path}{os.sep}graficas{runs[2]}.emt', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
 
     #kinetics
+
     try:
         forces = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Force"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
         torques = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Torque"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
         powers = pd.read_fwf(f'{p_path}{os.sep}{filenames["Kinetics"]["Power"]}', skiprows=6).drop(['Cycle'], axis=1).set_index(['Sample'])
         thereare_kinetics = True
-    except FileNotFoundError as e:
-        logger.warning(f'{e}, if there are no kinetics skip this message')
-        # logger.warning(f'Kinetics files not found {e}, if there are no kinetics skip this message')
+    except FileNotFoundError:
+        logger.warning('Kinetics files not found, if there are no kinetics skip this message')
         thereare_kinetics = False
 
     data_similarity = cmc(kin_data, kin_data2, kin_data3, runs)
     kin_data.columns = [kinematics_headers[joint] for joint in kin_data.columns]
 
-    if six == 'SI':
+    if six.lower() == 'si':
         logger.info('Creating excel', extra=d)
         # six_data_path = r'C:\\Users\\marcha\\Desktop\\PACIENTES\\PACIENTES VAR_6_MINS'
         p_folder_name = ' '.join(folder.split()[:-1]) + ' 6_MIN'
@@ -121,25 +123,32 @@ async def save_excel(six, selected_run):
 
         excel_book = add_new_sheet(excel_book, kin_data, 'Datos Cinemática') 
         excel_book = add_new_sheet(excel_book, data_similarity, 'Similitud') 
-        if thereare_kinetics:
-            forces.columns = [forces_headers[joint] for joint in forces.columns]
-            torques.columns = [torques_headers[joint] for joint in torques.columns]
-            powers.columns = [power_headers[joint] for joint in powers.columns]
-            excel_book = add_new_sheet(excel_book, forces, 'Fuerzas')
-            excel_book = add_new_sheet(excel_book, torques, 'Torques')
-            excel_book = add_new_sheet(excel_book, powers, 'Potencias')
-        excel_book.save(f'{p_path}{os.sep}Grafica&Data_6min_{file_name}.xlsx')
-        logger.info('Excel created', extra=d)
+        excel_filename = f'{p_path}{os.sep}Grafica&Data_6min_{file_name}.xlsx'
 
-    elif six == 'NO':
+    elif six.lower() == 'no':
         logger.info('Creating excel', extra=d)
-        wb = Workbook()
-        wb = add_new_sheet(wb, kin_data, 'Datos Cinemática', addnew=False)
-        wb = add_new_sheet(wb, data_similarity, 'Similitud')
-        wb.save(f'{p_path}{os.sep}Graficas_{file_name}.xlsx')
-        logger.info('Excel created', extra=d)
+
+        # Create new workbook
+        
+        excel_book = Workbook()
+        excel_book = add_new_sheet(excel_book, kin_data, 'Datos Cinemática', addnew=False)
+        excel_book = add_new_sheet(excel_book, data_similarity, 'Similitud')
+        excel_filename = f'{p_path}{os.sep}Graficas_{file_name}.xlsx'
     else:
         logger.warning('Caution: Check in "NOTA.txt" 6min option, the excel file has not been created.', extra=d)
+        return
+    if thereare_kinetics:
+        forces.columns = [forces_headers[joint] for joint in forces.columns]
+        torques.columns = [torques_headers[joint] for joint in torques.columns]
+        powers.columns = [power_headers[joint] for joint in powers.columns]
+        
+        # Create new sheets
+
+        excel_book = add_new_sheet(excel_book, forces, 'Fuerzas')
+        excel_book = add_new_sheet(excel_book, torques, 'Torques')
+        excel_book = add_new_sheet(excel_book, powers, 'Potencias')
+    excel_book.save(excel_filename)
+    logger.info('Excel created', extra=d)
     
 
 def p_data():
