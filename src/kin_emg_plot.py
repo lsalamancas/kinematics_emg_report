@@ -275,5 +275,5 @@ def plt_tables(kin_data, plane, toe_off):
                         line_color = 'black'))
         ])
         fig_rng.update_layout(width = 330, height = h[1], margin = {'l': 0, 'r': 0.5, 't': 0, 'b': 0})
-        fig_mm.write_image(os.sep.join([path, 'images', f'{plane}{int(i / 2)}.png']), scale = 3)
-        fig_rng.write_image(os.sep.join([path, 'images', f'{plane}{int(i / 2)}.png']), scale = 3)
+        fig_mm.write_image(os.sep.join([path, 'images', f'mm_{plane}{int(i / 2)}.png']), scale = 3)
+        fig_rng.write_image(os.sep.join([path, 'images', f'rng_{plane}{int(i / 2)}.png']), scale = 3)
